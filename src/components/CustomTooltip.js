@@ -61,12 +61,15 @@ const Tooltip = ({
         }, CLOSE_DELAY)
     }
 
+    const close = () => setOpen(false)
+
     return (
         <>
             {typeof children === 'function' ? (
                 children({
                     onMouseOver: onMouseOver,
                     onMouseOut: onMouseOut,
+                    close: close,
                     ref: popperReference,
                 })
             ) : (
