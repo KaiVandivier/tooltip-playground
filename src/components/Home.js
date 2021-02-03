@@ -1,146 +1,81 @@
 import { Tooltip, IntersectionDetector } from '@dhis2/ui'
-import throttle from 'lodash/throttle'
 import React from 'react'
-// import PropTypes from 'prop-types'
+import { Tooltip as CustomTooltip } from './CustomTooltip'
 
 /**
  * Notes:
- * For some reason, adding and removing event listeners somehow
- * makes the app register the 'mouse-out' better. Also canceling the
- * throttled function. Still, the delay is... delayed.
  *
- * It may be useful to expose a 'close instantly' function from the tooltip.
- * Or set the open/close delay.
- *
- * The 'height: 100%' is kinda problematic for styling.
- *
- * A tooltip persisting for longer than 400ms only happens when the mouse
- * reenters the triggering component (see Martin's last demo in the video)
- * - this is expected behavior, given the open/close delay
- *
- * Maybe use 'tooltip offset' for 'rootMargin'
- * - Also add rootMargin to IntersectionObserver
- *
+ * Intersection observer / custom tooltip with 'close()' is working
+ * - Issue: mousing over edge still opens the tooltip if the
+ *   triggering component is half-exposed from edges
+ * - Also, the tooltip popper still creeps outside the edges of the container
  */
-
-console.log('right throttle import', throttle)
-
-// const scrollListener = throttle(console.log, 500)
 
 function Home() {
     const rootRef = React.useRef(null)
 
-    React.useEffect(() => {
-        // const options = {
-        //   root: rootRef.current,
-        //   rootMargin: "0px",
-        //   threshold: 1.0,
-        // };
-        // let observer = new IntersectionObserver(console.log, options);
-        console.log("I'm an effect!")
-        // rootRef.current.addEventListener('scroll', scrollListener)
-        return () => {
-            // rootRef.current.removeEventListener('scroll', scrollListener)
-        }
-    })
-
-    const handleMouseOver = (onMouseOver /* onMouseOut */) => {
-        return () => {
-            console.log('mouse over')
-            //   rootRef.current.addEventListener("scroll", scrollListener);
-            onMouseOver()
-        }
-    }
-
-    const handleMouseOut = (onMouseOver, onMouseOut) => {
-        return () => {
-            console.log('mouse out')
-            //   rootRef.current.removeEventListener("scroll", scrollListener);
-            //   scrollListener.cancel();
-            onMouseOut()
-        }
-    }
-
     return (
-        <div ref={rootRef}>
+        <div ref={rootRef} className="container">
             <Tooltip content="tooltip content!" position="top">
                 {({ onMouseOver, onMouseOut, ref }) => (
                     <p
-                        onMouseOver={handleMouseOver(onMouseOver, onMouseOut)}
-                        onMouseOut={handleMouseOut(onMouseOver, onMouseOut)}
+                        onMouseOver={onMouseOver}
+                        onMouseOut={onMouseOut}
                         ref={ref}
                     >
                         TEST Paragraph with a tooltip
                     </p>
                 )}
             </Tooltip>
-            {/* <div style={{ height: "auto" }}> */}
-            <Tooltip content="tooltip content!" position="top">
-                {args => (
-                    <p {...args}>
+            <p>Test paragraph</p>
+            <p>Test paragraph</p>
+            <div>
+                <CustomTooltip content="tooltip content!" position="top">
+                    {({ close, ...args }) => (
                         <IntersectionDetector
                             rootRef={rootRef}
                             threshold={1.0}
                             onChange={({ isIntersecting }) => {
-                                // 'true' when visible
-                                console.log(isIntersecting)
+                                // 'true' when 100% visible (due to threshold=1.0)
+                                console.log({ isIntersecting })
                                 if (!isIntersecting) {
-                                    //   args.onMouseOut()
+                                    close()
                                 }
                             }}
                         >
-                            Intersections observed here
+                            <div className="intersections-observed" {...args}>
+                                Intersections observed + tooltip
+                            </div>
                         </IntersectionDetector>
-                    </p>
-                )}
-            </Tooltip>
-            {/* </div> */}
-            <Tooltip content="tooltip content!" position="top">
-                {args => <p {...args}>Paragraph with a tooltip</p>}
-            </Tooltip>
-            <Tooltip content="tooltip content!" position="top">
-                {args => <p {...args}>Paragraph with a tooltip</p>}
-            </Tooltip>
-            <Tooltip content="tooltip content!" position="top">
-                {args => <p {...args}>Paragraph with a tooltip</p>}
-            </Tooltip>
-            <Tooltip content="tooltip content!" position="top">
-                {args => <p {...args}>Paragraph with a tooltip</p>}
-            </Tooltip>
-            <Tooltip content="tooltip content!" position="top">
-                {args => <p {...args}>Paragraph with a tooltip</p>}
-            </Tooltip>
-            <Tooltip content="tooltip content!" position="top">
-                {args => <p {...args}>Paragraph with a tooltip</p>}
-            </Tooltip>
-            <Tooltip content="tooltip content!" position="top">
-                {args => <p {...args}>Paragraph with a tooltip</p>}
-            </Tooltip>
-            <Tooltip content="tooltip content!" position="top">
-                {args => <p {...args}>Paragraph with a tooltip</p>}
-            </Tooltip>
-            <Tooltip content="tooltip content!" position="top">
-                {args => <p {...args}>Paragraph with a tooltip</p>}
-            </Tooltip>
-            <Tooltip content="tooltip content!" position="top">
-                {args => <p {...args}>Paragraph with a tooltip</p>}
-            </Tooltip>
-            <Tooltip content="tooltip content!" position="top">
-                {args => <p {...args}>Paragraph with a tooltip</p>}
-            </Tooltip>
-            <Tooltip content="tooltip content!" position="top">
-                {args => <p {...args}>Paragraph with a tooltip</p>}
-            </Tooltip>
-            <Tooltip content="tooltip content!" position="top">
-                {args => <p {...args}>Paragraph with a tooltip</p>}
-            </Tooltip>
+                    )}
+                </CustomTooltip>
+            </div>
+            <p>Test paragraph</p>
+            <p>Test paragraph</p>
+            <p>Test paragraph</p>
+            <p>Test paragraph</p>
+            <p>Test paragraph</p>
+            <p>Test paragraph</p>
+            <p>Test paragraph</p>
+            <p>Test paragraph</p>
+            <p>Test paragraph</p>
+            <p>Test paragraph</p>
             <style jsx>
                 {`
-                    div {
-                        height: 200px;
+                    div.container {
+                        height: 300px;
                         overflow: scroll;
                         padding: 1rem;
                         border: 1px solid #43cbcb;
+                    }
+
+                    div.intersections-observed {
+                        height: 80px;
+                        padding: 1rem;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        border: 1px solid grey;
                     }
                 `}
             </style>
