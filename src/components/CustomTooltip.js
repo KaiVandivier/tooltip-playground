@@ -1,10 +1,8 @@
-import propTypes from '@dhis2/prop-types'
-import { colors, layers } from '@dhis2/ui-constants'
+import { colors, layers, Popper, useLayerContext } from '@dhis2/ui'
+import PropTypes from 'prop-types'
 import React, { useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { resolve } from 'styled-jsx/css'
-import { useLayerContext } from '../Layer/Layer.js'
-import { Popper } from '../Popper/Popper.js'
 
 const TOOLTIP_OFFSET = 4
 
@@ -135,12 +133,12 @@ Tooltip.defaultProps = {
  * @prop {('top'|'bottom'|'right'|'left')} [placement=top]
  */
 Tooltip.propTypes = {
-    children: propTypes.oneOfType([propTypes.node, propTypes.func]),
-    className: propTypes.string,
-    content: propTypes.node,
-    dataTest: propTypes.string,
-    maxWidth: propTypes.number,
-    placement: propTypes.oneOf(['top', 'right', 'bottom', 'left']),
+    children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+    className: PropTypes.string,
+    content: PropTypes.node,
+    dataTest: PropTypes.string,
+    maxWidth: PropTypes.number,
+    placement: PropTypes.oneOf(['top', 'right', 'bottom', 'left']),
 }
 
 export { Tooltip, TOOLTIP_OFFSET }
